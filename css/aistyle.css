@@ -1,0 +1,101 @@
+/* style.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0b0c10;
+    color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.jeopardy-container {
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #ffe81f;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.category {
+    background-color: #1f2833;
+    font-weight: bold;
+    padding: 15px;
+    border: 2px solid #45a29e;
+}
+
+.cell {
+    background-color: #45a29e;
+    color: #0b0c10;
+    padding: 20px;
+    font-size: 1.2em;
+    border: none;
+    cursor: pointer;
+}
+
+.cell:disabled {
+    background-color: #2f4f4f;
+    cursor: not-allowed;
+}
+
+.cell.correct {
+    background-color: green;
+    color: white;
+}
+
+.cell.wrong {
+    background-color: red;
+    color: white;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.modal-content {
+    background-color: #1f2833;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+}
+
+input[type=\"text\"] {
+ width: 80%;
+padding: 10px;
+margin-top: 10px;
+border-radius: 5px;
+border: none;
+
+}
+button#submitAnswer {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #66fcf1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#result {
+    margin-top: 10px;
+}

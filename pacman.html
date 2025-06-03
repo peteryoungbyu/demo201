@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pac-Man</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .score {
+            color: white;
+            font-family: sans-serif;
+            font-size: 20px;
+            margin: 10px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(20, 20px);
+            grid-template-rows: repeat(20, 20px);
+            gap: 1px;
+        }
+        
+        .cell {
+            width: 20px;
+            height: 20px;
+            box-sizing: border-box;
+        }
+        
+        .wall {
+            background-color: blue;
+        }
+        
+        .empty {
+            background-color: black;
+        }
+        
+        .dot {
+            background-color: black;
+            position: relative;
+        }
+        
+        .dot::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        
+        .pacman {
+            background-color: yellow;
+            border-radius: 50%;
+        }
+        
+        .ghost {
+            background-color: red;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="score" id="score">Score: 0</div>
+    <div class="grid" id="grid"></div>
+
+    <script>
+        const grid = document.getElementById("grid");
+        const scoreDisplay = document.getElementById("score");
+        const width = 20;
+        const layout = [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+            1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1,
+            1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+            1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+            1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1,
+            1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+            1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1,
+            1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+        ];
+
+        const cells = [];
+        let score = 0;
+
+        function createBoard() {
+            for (let i = 0; i < layout.length; i++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                grid.appendChild(cell);
+                cells.push(cell);
+
+                if (layout[i] === 1) {
+                    cell.classList.add("wall");
+                } else if (layout[i] === 0) {
+                    cell.classList.add("dot");
+                } else {
+                    cell.classList.add("empty");
+                }
+            }
+        }
+
+        createBoard();
+
+        let pacmanIndex = 21;
+        cells[pacmanIndex].classList.add("pacman");
+
+        // 👻 6 ghost starting positions
+        let ghostIndices = [261, 262, 263, 281, 282, 283];
+        ghostIndices.forEach(i => cells[i].classList.add("ghost"));
+
+        function movePacman(e) {
+            cells[pacmanIndex].classList.remove("pacman");
+
+            const directions = {
+                ArrowUp: -width,
+                ArrowDown: width,
+                ArrowLeft: -1,
+                ArrowRight: 1
+            };
+
+            const direction = directions[e.key];
+            const nextIndex = pacmanIndex + direction;
+
+            if (
+                nextIndex >= 0 &&
+                nextIndex < cells.length &&
+                !cells[nextIndex].classList.contains("wall") &&
+                !(e.key === 'ArrowLeft' && pacmanIndex % width === 0) &&
+                !(e.key === 'ArrowRight' && pacmanIndex % width === width - 1)
+            ) {
+                pacmanIndex = nextIndex;
+            }
+
+            if (cells[pacmanIndex].classList.contains("dot")) {
+                cells[pacmanIndex].classList.remove("dot");
+                score += 10;
+                scoreDisplay.textContent = `Score: ${score}`;
+            }
+
+            cells[pacmanIndex].classList.add("pacman");
+
+            if (ghostIndices.includes(pacmanIndex)) {
+                alert("Game Over!");
+                document.removeEventListener("keydown", movePacman);
+                clearInterval(ghostTimer);
+            }
+        }
+
+        document.addEventListener("keydown", movePacman);
+
+        function moveGhosts() {
+            const directions = [-1, +1, -width, +width];
+
+            ghostIndices.forEach((ghostIndex, i) => {
+                const validDirs = directions.filter(dir => {
+                    const target = ghostIndex + dir;
+                    return (
+                        target >= 0 &&
+                        target < cells.length &&
+                        !cells[target].classList.contains("wall") &&
+                        !cells[target].classList.contains("ghost")
+                    );
+                });
+
+                if (validDirs.length > 0) {
+                    const direction = validDirs[Math.floor(Math.random() * validDirs.length)];
+                    cells[ghostIndex].classList.remove("ghost");
+                    ghostIndices[i] += direction;
+                    cells[ghostIndices[i]].classList.add("ghost");
+
+                    if (ghostIndices[i] === pacmanIndex) {
+                        alert("Game Over!");
+                        document.removeEventListener("keydown", movePacman);
+                        clearInterval(ghostTimer);
+                    }
+                }
+            });
+        }
+
+        const ghostTimer = setInterval(moveGhosts, 500);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Star Wars Jeopardy</title>
+    <link rel="stylesheet" href="css/aistyle.css" />
+</head>
+
+<body>
+    <div class="jeopardy-container">
+        <h1>Star Wars Jeopardy</h1>
+        <div class="board">
+            <div class="category">Characters</div>
+            <div class="category">Planets</div>
+            <div class="category">Quotes</div>
+            <div class="category">Movies</div>
+            <div class="category">Lore</div>
+
+            <!-- 5x5 grid of questions -->
+            <button class="cell" data-question="Who is Luke's father?" data-answer="Darth Vader">100</button>
+            <button class="cell" data-question="Home of the Wookiees?" data-answer="Kashyyyk">100</button>
+            <button class="cell" data-question="'Do or do not...'" data-answer="There is no try">100</button>
+            <button class="cell" data-question="First Star Wars movie released?" data-answer="A New Hope">100</button>
+            <button class="cell" data-question="What are kyber crystals used for?" data-answer="Lightsabers">100</button>
+
+            <button class="cell" data-question="Who is Princess Leia's brother?" data-answer="Luke Skywalker">200</button>
+            <button class="cell" data-question="Planet destroyed by the Death Star?" data-answer="Alderaan">200</button>
+            <button class="cell" data-question="'I am your father' was said by?" data-answer="Darth Vader">200</button>
+            <button class="cell" data-question="Jar Jar Binks first appeared in?" data-answer="The Phantom Menace">200</button>
+            <button class="cell" data-question="What is the Force?" data-answer="An energy field created by all living things">200</button>
+
+            <button class="cell" data-question="Who trained Obi-Wan?" data-answer="Qui-Gon Jinn">300</button>
+            <button class="cell" data-question="Desert planet home to Anakin and Luke?" data-answer="Tatooine">300</button>
+            <button class="cell" data-question="'It's a trap!' was said by?" data-answer="Admiral Ackbar">300</button>
+            <button class="cell" data-question="Movie with the Battle of Hoth?" data-answer="The Empire Strikes Back">300</button>
+            <button class="cell" data-question="Who is Darth Plagueis?" data-answer="A Sith Lord who could prevent death">300</button>
+
+            <button class="cell" data-question="Who is Rey's mentor?" data-answer="Leia Organa">400</button>
+            <button class="cell" data-question="City in the clouds?" data-answer="Cloud City">400</button>
+            <button class="cell" data-question="'I’ve got a bad feeling about this' is said in?" data-answer="Every main film">400</button>
+            <button class="cell" data-question="Which movie introduces BB-8?" data-answer="The Force Awakens">400</button>
+            <button class="cell" data-question="Sith Rule of Two means?" data-answer="One master, one apprentice">400</button>
+
+            <button class="cell" data-question="What species is Yoda?" data-answer="Unknown">500</button>
+            <button class="cell" data-question="Ice planet base in Episode V?" data-answer="Hoth">500</button>
+            <button class="cell" data-question="'Help me, Obi-Wan Kenobi...' was said by?" data-answer="Princess Leia">500</button>
+            <button class="cell" data-question="Final movie in Skywalker Saga?" data-answer="The Rise of Skywalker">500</button>
+            <button class="cell" data-question="Name of ancient Jedi texts?" data-answer="Jedi Code">500</button>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="question"></p>
+            <input type="text" id="answerInput" placeholder="Your answer...">
+            <button id="submitAnswer">Submit</button>
+            <p id="result"></p>
+        </div>
+    </div>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const modal = document.getElementById('modal');
+        const questionEl = document.getElementById('question');
+        const answerInput = document.getElementById('answerInput');
+        const resultEl = document.getElementById('result');
+        const submitAnswer = document.getElementById('submitAnswer');
+
+        let correctAnswer = '';
+        let currentCell = null;
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                correctAnswer = cell.dataset.answer.toLowerCase();
+                questionEl.textContent = cell.dataset.question;
+                modal.style.display = 'block';
+                answerInput.value = '';
+                resultEl.textContent = '';
+                currentCell = cell;
+            });
+        });
+
+        submitAnswer.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            if (userAnswer === correctAnswer) {
+                resultEl.textContent = 'Correct!';
+                currentCell.disabled = true;
+                currentCell.textContent = '';
+                currentCell.classList.add('correct');
+            } else {
+                resultEl.textContent = 'Wrong! The correct answer was: ' + correctAnswer;
+                currentCell.disabled = true;
+                currentCell.textContent = '';
+                currentCell.classList.add('wrong');
+            }
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>
